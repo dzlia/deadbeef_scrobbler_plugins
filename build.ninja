@@ -1,9 +1,9 @@
 srcDir=src
 testDir=test
 buildDir=build
-cxxFlags=-I"include" -Wall -fPIC -std=c++11 -O3 -march=native -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections -DNDEBUG
-ldFlags=-Llib -Wl,-version-script,export_symbols
-cxxFlags_test=-I"$srcDir" -I"include" -Wall -fPIC -std=c++11 -O0 -g3
+cxxFlags=-I"include" -Wall -fPIC -std=c++17 -O3 -g0 -march=native -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections -DNDEBUG
+ldFlags=-Llib -Wl,-version-script=export_symbols
+cxxFlags_test=-I"$srcDir" -I"include" -Wall -fPIC -std=c++17 -O0 -g3
 ldFlags_test=-L"$buildDir" $ldFlags
 
 rule cxx
@@ -43,7 +43,7 @@ build $buildDir/lastfm_scrobbler.so: linkDynamic $
     $buildDir/LastfmScrobbler.o $
     $buildDir/lastfm_scrobbler.o $
     $buildDir/ScrobbleInfo.o
-  libs=-Wl,-gc-sections -Wl,-Bstatic -lafc -Wl,-Bdynamic -lcurl -lssl
+  libs=-Wl,-gc-sections -Wl,-Bstatic -lafc -Wl,-Bdynamic -lcrypto -lcurl -lssl
 
 build $buildDir/unit_tests: bin $
     $buildDir/DeadbeefUtilTest.o $
