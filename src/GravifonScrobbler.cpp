@@ -1,5 +1,5 @@
 /* gravifon_scrobbler - an audio track scrobbler to Gravifon plugin to the audio player DeaDBeeF.
-Copyright (C) 2013-2015 Dźmitry Laŭčuk
+Copyright (C) 2013-2023 Dźmitry Laŭčuk
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -231,20 +231,26 @@ void GravifonScrobbler::configure(const char * const serverUrl, const std::size_
 	/* Colon (':') is not allowed to be in a username by Gravifon. This concatenation is safe.
 	 * In addition, the character 'colon' in UTF-8 is equivalent to those in ISO-8859-1.
 	 */
-	afc::FastStringBuffer<char, afc::AllocMode::accurate> token(usernameSize + passwordSize + 1);
+	const std::size_t tokenSize = usernameSize + passwordSize + 1;
+	afc::FastStringBuffer<char, afc::AllocMode::accurate> token(tokenSize);
 	token.append(username, usernameSize);
 	token.append(':');
 	token.append(password, passwordSize);
 
-	// Curl expects the basic charset in headers.
-	afc::FastStringBuffer<char, afc::AllocMode::accurate> tmpAuthHeader("Authorization: Basic "_s.size() + token.size() * 4 / 3); // base64 makes 4 bytes out of 3.
-	tmpAuthHeader.append("Authorization: Basic "_s); // HTTP Basic authentication is used.
-	tmpAuthHeader.returnTail(afc::encodeBase64(token.begin(), token.size(), tmpAuthHeader.borrowTail()));
+	// HTTP Basic authentication is used.
+	const std::size_t authHeaderSize =
+			"Authorization: Basic "_s.size() + afc::base64Size(tokenSize);
+	afc::FastStringBuffer<char, afc::AllocMode::accurate> authHeader(
+			authHeaderSize);
+	authHeader.append("Authorization: Basic "_s);
+	authHeader.returnTail(afc::encodeBase64(token.begin(), tokenSize,
+			authHeader.borrowTail()));
+	assert(authHeaderSize == authHeader.size());
 
 	const bool sameScrobblerUrl = afc::equal(m_scrobblerUrl.begin(), m_scrobblerUrl.size(),
 			tmpUrl.begin(), tmpUrl.size());
 	const bool sameAuthHeader = afc::equal(m_authHeader.begin(), m_scrobblerUrl.size(),
-			tmpAuthHeader.begin(), tmpAuthHeader.size());
+			authHeader.begin(), authHeader.size());
 
 	if (!sameScrobblerUrl || !sameAuthHeader) {
 		// The configuration has changed. Updating it as well as resetting the 'scrobbles to wait' counter.
@@ -253,8 +259,7 @@ void GravifonScrobbler::configure(const char * const serverUrl, const std::size_
 			m_scrobblerUrl.attach(tmpUrl.detach(), urlSize);
 		}
 		if (!sameAuthHeader) {
-			const std::size_t authHeaderSize = tmpAuthHeader.size();
-			m_authHeader.attach(tmpAuthHeader.detach(), authHeaderSize);
+			m_authHeader.attach(authHeader.detach(), authHeaderSize);
 		}
 		m_scrobblesToWait = minScrobblesToWait();
 	}
