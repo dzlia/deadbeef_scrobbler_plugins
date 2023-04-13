@@ -1,5 +1,5 @@
 /* gravifon_scrobbler - an audio track scrobbler to Gravifon plugin to the audio player DeaDBeeF.
-Copyright (C) 2013-2015 Dźmitry Laŭčuk
+Copyright (C) 2013-2023 Dźmitry Laŭčuk
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ extern "C" DB_plugin_t *lastfm_scrobbler_load(DB_functions_t * const api)
 	plugin.plugin.name = u8"lastfm scrobbler";
 	plugin.plugin.descr = u8"An audio track scrobbler to Last.fm.";
 	plugin.plugin.copyright =
-		u8"Copyright (C) 2013-2015 Dźmitry Laŭčuk\n"
+		u8"Copyright (C) 2013-2023 Dźmitry Laŭčuk\n"
 		"\n"
 		"This program is free software: you can redistribute it and/or modify\n"
 		"it under the terms of the GNU General Public License as published by\n"
@@ -196,16 +196,21 @@ extern "C" DB_plugin_t *lastfm_scrobbler_load(DB_functions_t * const api)
 		"You should have received a copy of the GNU General Public License\n"
 		"along with this program.  If not, see <http://www.gnu.org/licenses/>.\n";
 
-	plugin.plugin.website = u8"https://github.com/dzidzitop/gravifon_scrobbler_deadbeef_plugin";
+	plugin.plugin.website =
+			u8"https://github.com/dzlia/deadbeef_scrobbler_plugins";
 	plugin.plugin.start = lastfmScrobblerStart;
 	plugin.plugin.stop = lastfmScrobblerStop;
 	plugin.plugin.configdialog =
-		R"(property "Enable scrobbler" checkbox lastfmScrobbler.enabled 0;)"
-		R"(property "Username" entry lastfmScrobbler.username "";)"
-		R"(property "Password" password lastfmScrobbler.password "";)"
-		R"(property "URL to Last.fm API" entry lastfmScrobbler.lastfmUrl ")" u8"http://post.audioscrobbler.com" "\";"
-		R"_(property "Scrobble threshold (%)" entry lastfmScrobbler.threshold "0.0";)_"
-		R"(property "Failure-safe scrobbling" checkbox lastfmScrobbler.safeScrobbling 0;)";
+			u8"property \"Enable scrobbler\" "
+				u8"checkbox lastfmScrobbler.enabled 0;"
+			u8"property \"Username\" entry lastfmScrobbler.username \"\";"
+			u8"property \"Password\" password lastfmScrobbler.password \"\";"
+			u8"property \"URL to Last.fm API\" entry lastfmScrobbler.lastfmUrl "
+				u8"\"http://post.audioscrobbler.com\";"
+			u8"property \"Scrobble threshold (%)\" "
+				u8"entry lastfmScrobbler.threshold \"0.0\";"
+			u8"property \"Failure-safe scrobbling\" "
+				u8"checkbox lastfmScrobbler.safeScrobbling 0;";
 
 	plugin.plugin.message = lastfmScrobblerMessage;
 
