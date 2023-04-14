@@ -107,8 +107,8 @@ Here, `${basedir}` denotes the root directory of the gravifon scrobbler codebase
 1. install the build tool [`ninja`](https://github.com/martine/ninja)
 2. install GCC g++ 10.2+
 3. install the libraries (including development versions; use your package manager for this):
-    * `libjsoncpp`
-    * `libcurl`
+	* `libcurl`
+	* `libssl`
 4. build the static version of the library [`libafc`](https://github.com/dzlia/libafc) and copy it to `${basedir}/lib`
 5. copy headers of the library `libafc` to `${basedir}/include`
 6. get the source code package of DeaDBeeF 0.5.6 and copy the file `deadbeef.h` to `${basedir}/include`
@@ -121,5 +121,5 @@ System requirements
 * DeaDBeeF 0.5.6+
 * GCC g++ 10.2+
 * libcurl 7.26.0+
-* libjsoncpp 0.5.0+
+* libssl 1.1+
 * ninja 1.3.3+
