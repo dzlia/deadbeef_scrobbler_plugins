@@ -88,7 +88,7 @@ namespace
 				auto propNameParser = [&](const char * const begin, const char * const end, ErrorHandler &errorHandler) -> const char *
 				{
 					propNameBegin = begin;
-					const char * const propNameEnd = std::find(begin, end, u8"\""[0]);
+					const char * const propNameEnd = std::find(begin, end, '"');
 					propNameSize = propNameEnd - propNameBegin;
 					return propNameEnd;
 				};
@@ -133,7 +133,8 @@ namespace
 					auto errorDescParser = [&](const char * const begin, const char * const end, ErrorHandler &errorHandler) -> const char *
 					{
 						record.errorDescBegin = begin;
-						const char * const stringEnd = std::find(begin, end, u8"\""[0]);
+						const char * const stringEnd =
+								std::find(begin, end, '"');
 						record.errorDescEnd = stringEnd;
 						return stringEnd;
 					};
@@ -159,7 +160,7 @@ namespace
 				}
 
 				const char c = *p;
-				if (likely(c == u8","[0])) {
+				if (likely(c == ',')) {
 					++p;
 				} else {
 					errorHandler.malformedJson(p);
@@ -288,7 +289,7 @@ size_t GravifonScrobbler::doScrobbling()
 	}
 
 	afc::FastStringBuffer<char> body(127); // 127 is a reasonable starting capacity.
-	body.append(u8"["[0]); // Space is known to be reserved.
+	body.append('['); // Space is known to be reserved.
 
 	afc::FastStringBuffer<char> buf;
 	// Adding up to 20 scrobbles to the request.
@@ -298,9 +299,9 @@ size_t GravifonScrobbler::doScrobbling()
 			submittedCount < 20 && it != end; ++submittedCount, ++it) {
 		appendAsJson(*it, body);
 		body.reserveForOne();
-		body.append(u8","[0]);
+		body.append(',');
 	}
-	*(body.end() - 1) = u8"]"[0]; // Removing the redundant comma at the same time.
+	*(body.end() - 1) = ']'; // Removing the redundant comma at the same time.
 
 	HttpRequest request;
 	request.setBody(body.data(), body.size());
